@@ -1,0 +1,89 @@
+<svg viewBox="0 0 880 520" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <style>
+      .box{fill:#ffffff;stroke:#334155;stroke-width:1.5;rx:8;}
+      .stage{fill:#f0b429;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+      .t{font-size:13px;fill:#0f172a;font-weight:600;}
+      .s{font-size:10.5px;fill:#64748b;}
+      .lab{font-size:10px;fill:#475569;font-style:italic;}
+      .grp{fill:none;stroke:#cbd5e1;stroke-width:1;stroke-dasharray:4 3;rx:10;}
+    </style>
+  </defs>
+
+  <!-- Stage labels across the top -->
+  <text x="120" y="28" text-anchor="middle" class="stage">Ingest</text>
+  <text x="350" y="28" text-anchor="middle" class="stage">Process</text>
+  <text x="580" y="28" text-anchor="middle" class="stage">Store</text>
+  <text x="790" y="28" text-anchor="middle" class="stage">Deliver</text>
+
+  <!-- Sources -->
+  <rect x="30" y="60" width="180" height="50" rx="8" class="box"/>
+  <text x="120" y="82" text-anchor="middle" class="t">Google for Jobs</text>
+  <text x="120" y="98" text-anchor="middle" class="s">via JSearch API (live)</text>
+
+  <rect x="30" y="130" width="180" height="50" rx="8" class="box"/>
+  <text x="120" y="152" text-anchor="middle" class="t">Sample fixtures</text>
+  <text x="120" y="168" text-anchor="middle" class="s">data/sample_*.json</text>
+
+  <!-- Ingestion client -->
+  <rect x="280" y="60" width="180" height="62" rx="8" class="box"/>
+  <text x="370" y="82" text-anchor="middle" class="t">jsearch_client.py</text>
+  <text x="370" y="98" text-anchor="middle" class="s">normalize + salary→USD</text>
+  <text x="370" y="113" text-anchor="middle" class="s">stable dedup id</text>
+
+  <!-- Processing -->
+  <rect x="280" y="150" width="180" height="62" rx="8" class="box"/>
+  <text x="370" y="172" text-anchor="middle" class="t">run.py · taxonomy</text>
+  <text x="370" y="188" text-anchor="middle" class="s">extract ~30 skills</text>
+  <text x="370" y="203" text-anchor="middle" class="s">rebuild monthly trends</text>
+
+  <!-- Storage -->
+  <rect x="520" y="60" width="170" height="152" rx="8" class="box"/>
+  <text x="605" y="84" text-anchor="middle" class="t">Postgres / SQLite</text>
+  <line x1="535" y1="96" x2="675" y2="96" stroke="#e2e8f0"/>
+  <text x="605" y="116" text-anchor="middle" class="s">job_postings</text>
+  <text x="605" y="138" text-anchor="middle" class="s">posting_skills</text>
+  <text x="605" y="160" text-anchor="middle" class="s">skill_trends (agg)</text>
+  <text x="605" y="190" text-anchor="middle" class="lab">SQLAlchemy ORM</text>
+
+  <!-- Delivery -->
+  <rect x="730" y="60" width="130" height="152" rx="8" class="box"/>
+  <text x="795" y="84" text-anchor="middle" class="t">FastAPI</text>
+  <line x1="745" y1="96" x2="845" y2="96" stroke="#e2e8f0"/>
+  <text x="795" y="116" text-anchor="middle" class="s">dashboard /</text>
+  <text x="795" y="138" text-anchor="middle" class="s">/api/* JSON</text>
+  <text x="795" y="160" text-anchor="middle" class="s">/api/digest</text>
+  <text x="795" y="188" text-anchor="middle" class="lab">SVG chart, no JS</text>
+
+  <!-- Arrows -->
+  <line x1="210" y1="85" x2="278" y2="88" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="210" y1="155" x2="278" y2="100" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="370" y1="122" x2="370" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="460" y1="160" x2="518" y2="135" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="690" y1="135" x2="728" y2="135" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Scheduler note -->
+  <rect x="280" y="250" width="410" height="44" rx="8" class="box" style="fill:#fffbeb;stroke:#f0b429;"/>
+  <text x="485" y="270" text-anchor="middle" class="t">APScheduler — daily ingestion cron</text>
+  <text x="485" y="286" text-anchor="middle" class="s">re-runs the Ingest → Process → Store path every 24h</text>
+  <line x1="370" y1="248" x2="370" y2="214" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+  <line x1="605" y1="248" x2="605" y2="214" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+
+  <!-- Consumers -->
+  <text x="795" y="248" text-anchor="middle" class="stage" style="fill:#475569;">Consumers</text>
+  <rect x="730" y="262" width="130" height="34" rx="6" class="box"/>
+  <text x="795" y="283" text-anchor="middle" class="s">bootcamps · students</text>
+  <line x1="795" y1="212" x2="795" y2="260" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Scale note -->
+  <rect x="30" y="340" width="830" height="150" rx="10" class="grp"/>
+  <text x="48" y="364" class="stage" style="fill:#475569;">Scale path (10× / 100×)</text>
+  <text x="48" y="392" class="s">• Ingest: replace single-process pull with a task queue (Celery / RQ) and shard niche queries across workers.</text>
+  <text x="48" y="414" class="s">• Process: move dictionary extraction to a streaming consumer (Kafka → worker) once volume exceeds a daily batch.</text>
+  <text x="48" y="436" class="s">• Store: partition job_postings by month; skill_trends stays small (≈ skills × markets × months) and serves reads.</text>
+  <text x="48" y="458" class="s">• Deliver: dashboard reads only the pre-aggregated trends table, so read cost is flat as raw volume grows.</text>
+  <text x="48" y="480" class="s">• Cost: raw data input ≈ free at demo scale (JSearch 200 req/mo free tier); ~US$20–25/mo at small commercial scale.</text>
+</svg>

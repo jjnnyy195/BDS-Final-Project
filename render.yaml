@@ -1,0 +1,25 @@
+# Render deployment blueprint.
+# Deploys the web service + a free Postgres instance. Push this repo to GitHub,
+# then in Render: New > Blueprint > pick the repo. The DATABASE_URL is wired
+# automatically from the database block below.
+
+services:
+  - type: web
+    name: skillsignal
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: skillsignal-db
+          property: connectionString
+      - key: INGEST_MODE
+        value: sample        # set to "live" and add RAPIDAPI_KEY for real data
+      - key: RAPIDAPI_KEY
+        sync: false          # set manually in the Render dashboard if going live
+
+databases:
+  - name: skillsignal-db
+    plan: free

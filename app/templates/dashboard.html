@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkillSignal — data/ML hiring intelligence</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#131a23; --panel-2:#0f151c; --line:#222d3a;
+    --ink:#e6edf3; --muted:#7d8aa0; --dim:#4d5a6e;
+    --rise:#4ade80; --rise-dim:#1f3d2c; --fall:#f87171; --fall-dim:#3d2222;
+    --accent:#f0b429; --grid:#1b242f;
+    --mono:"SFMono-Regular",ui-monospace,"JetBrains Mono","Menlo",monospace;
+    --sans:"Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* Masthead */
+  header{border-bottom:1px solid var(--line);background:
+      linear-gradient(180deg,#0f1620,transparent)}
+  .mast{display:flex;align-items:baseline;gap:16px;padding:26px 0 18px;flex-wrap:wrap}
+  .logo{font-family:var(--mono);font-size:13px;letter-spacing:.32em;
+    color:var(--accent);text-transform:uppercase}
+  h1{font-size:30px;margin:0;font-weight:680;letter-spacing:-.02em}
+  h1 .thin{color:var(--muted);font-weight:400}
+  .tag{color:var(--muted);font-size:13.5px;max-width:560px;margin:2px 0 0}
+
+  .statbar{display:flex;gap:0;border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);margin-top:18px;background:var(--panel-2);
+    font-family:var(--mono)}
+  .stat{padding:11px 18px;border-right:1px solid var(--line)}
+  .stat b{display:block;font-size:17px;color:var(--ink)}
+  .stat span{font-size:10.5px;letter-spacing:.14em;color:var(--dim);
+    text-transform:uppercase}
+
+  /* Market toggle */
+  .toggle{display:flex;gap:6px;padding:18px 0 4px}
+  .toggle a{font-family:var(--mono);font-size:12px;letter-spacing:.1em;
+    padding:7px 14px;border:1px solid var(--line);border-radius:2px;
+    color:var(--muted);text-decoration:none;text-transform:uppercase}
+  .toggle a.on{color:var(--bg);background:var(--accent);border-color:var(--accent);
+    font-weight:600}
+
+  section{padding:30px 0}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    color:var(--dim);text-transform:uppercase;margin:0 0 14px;
+    display:flex;align-items:center;gap:10px}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* Trending two-column */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+    overflow:hidden}
+  .card h3{margin:0;padding:13px 16px;font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;font-family:var(--mono);border-bottom:1px solid var(--line)}
+  .card.rise h3{color:var(--rise)} .card.fall h3{color:var(--fall)}
+  .row{display:flex;align-items:center;gap:12px;padding:9px 16px;
+    border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:13px}
+  .row:last-child{border-bottom:0}
+  .row .nm{flex:1;font-weight:600;color:var(--ink)}
+  .row .cat{font-size:10px;color:var(--dim);letter-spacing:.08em;
+    text-transform:uppercase}
+  .row .mv{width:120px;text-align:right;color:var(--muted)}
+  .delta{display:inline-block;min-width:54px;text-align:right;font-weight:700;
+    padding:1px 6px;border-radius:2px}
+  .delta.up{color:var(--rise);background:var(--rise-dim)}
+  .delta.dn{color:var(--fall);background:var(--fall-dim)}
+
+  /* Line chart */
+  .chartwrap{background:var(--panel);border:1px solid var(--line);
+    border-radius:4px;padding:18px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;
+    font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;
+    margin-right:6px;border-radius:2px}
+
+  /* Salary + snapshot bars */
+  .bars{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+    padding:6px 16px}
+  .bar{display:flex;align-items:center;gap:12px;padding:8px 0;
+    border-bottom:1px solid var(--grid);font-family:var(--mono);font-size:12.5px}
+  .bar:last-child{border-bottom:0}
+  .bar .lab{width:96px;font-weight:600;flex-shrink:0}
+  .bar .track{flex:1;height:14px;background:var(--panel-2);border-radius:2px;
+    overflow:hidden}
+  .bar .fill{height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa)}
+  .bar.sal .fill{background:linear-gradient(90deg,#b45309,var(--accent))}
+  .bar .val{width:86px;text-align:right;color:var(--muted)}
+
+  footer{border-top:1px solid var(--line);color:var(--dim);font-size:12px;
+    padding:26px 0 50px;font-family:var(--mono);line-height:1.7}
+  footer code{color:var(--muted)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;
+    letter-spacing:.12em;color:var(--accent);border:1px solid var(--rise-dim);
+    background:#10241a;padding:2px 8px;border-radius:99px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="mast">
+      <div>
+        <div class="logo">◢ SkillSignal</div>
+        <h1>Data &amp; ML hiring <span class="thin">signal</span></h1>
+        <p class="tag">Which engineering skills are heating up — and which are
+          cooling off — in {{ "Taiwan" if market=="TW" else "the global market" }},
+          tracked monthly from live job postings.</p>
+      </div>
+    </div>
+    <div class="statbar">
+      <div class="stat"><b>{{ totals.get("TW",0) + totals.get("GLOBAL",0) }}</b>
+        <span>Postings tracked</span></div>
+      <div class="stat"><b>{{ months|length }}</b><span>Months of history</span></div>
+      <div class="stat"><b>{{ snapshot|length }}</b><span>Skills monitored</span></div>
+      <div class="stat"><b>{{ latest_month }}</b><span>Latest window</span></div>
+    </div>
+    <div class="toggle">
+      <a class="{{ 'on' if market=='GLOBAL' }}" href="/?market=GLOBAL">Global</a>
+      <a class="{{ 'on' if market=='TW' }}" href="/?market=TW">Taiwan</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Trending -->
+  <section>
+    <p class="eyebrow">Movers · last 3 months</p>
+    <div class="cols">
+      <div class="card rise">
+        <h3>▲ Heating up</h3>
+        {% for r in rising %}
+        <div class="row">
+          <span class="delta up">+{{ (r.delta*100)|round|int }}pp</span>
+          <span class="nm">{{ r.skill }}<div class="cat">{{ r.category }}</div></span>
+          <span class="mv">{{ (r.share_then*100)|round|int }}% → {{ (r.share_now*100)|round|int }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="card fall">
+        <h3>▼ Cooling off</h3>
+        {% for r in falling %}
+        <div class="row">
+          <span class="delta dn">{{ (r.delta*100)|round|int }}pp</span>
+          <span class="nm">{{ r.skill }}<div class="cat">{{ r.category }}</div></span>
+          <span class="mv">{{ (r.share_then*100)|round|int }}% → {{ (r.share_now*100)|round|int }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Line chart of top-6 -->
+  <section>
+    <p class="eyebrow">Demand share over time · top 6 skills</p>
+    <div class="chartwrap">
+      {{ chart_svg|safe }}
+      <div class="legend">
+        {% for sk in top6 %}
+          <span><i style="background:{{ palette[loop.index0] }}"></i>{{ sk }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Snapshot + salary -->
+  <section>
+    <div class="cols">
+      <div>
+        <p class="eyebrow">Most demanded · {{ latest_month }}</p>
+        <div class="bars">
+          {% set maxshare = snapshot[0].share if snapshot else 1 %}
+          {% for s in snapshot[:12] %}
+          <div class="bar">
+            <span class="lab">{{ s.skill }}</span>
+            <span class="track"><span class="fill"
+              style="width:{{ (s.share/maxshare*100)|round(1) }}%"></span></span>
+            <span class="val">{{ (s.share*100)|round|int }}%</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow">Salary premium · avg disclosed (USD/yr)</p>
+        <div class="bars">
+          {% set maxsal = salary[0].avg_salary_usd if salary else 1 %}
+          {% for s in salary %}
+          <div class="bar sal">
+            <span class="lab">{{ s.skill }}</span>
+            <span class="track"><span class="fill"
+              style="width:{{ (s.avg_salary_usd/maxsal*100)|round(1) }}%"></span></span>
+            <span class="val">${{ "{:,.0f}".format(s.avg_salary_usd) }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="pill">live demo</span> &nbsp; Sample/seeded data shown when no
+    API key is configured. Live mode ingests from Google&nbsp;for&nbsp;Jobs via
+    the JSearch API.<br>
+    API: <code>/api/trending</code> · <code>/api/salary</code> ·
+    <code>/api/digest?format=text</code> · <code>/api/health</code><br>
+    SkillSignal — Big Data Systems final project, NTU Spring 2026.
+  </footer>
+</div>
+</body>
+</html>
