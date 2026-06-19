@@ -1,4 +1,4 @@
-# SkillSignal — Data & ML Hiring Intelligence
+# SkillSignal
 
 A small end-to-end system that turns public job-posting data into a paid product:
 a monthly **skill-demand trend feed** for the data/ML engineering job market,
@@ -55,7 +55,7 @@ digest.
    APScheduler re-runs ingestion daily.
 ```
 
-A more detailed diagram is in the PDF report (`architecture.png`).
+A more detailed diagram is in the report.
 
 ---
 
