@@ -101,6 +101,14 @@ def api_digest(market: str = "GLOBAL", format: str = Query("json")):
         return PlainTextResponse(render_text(d))
     return JSONResponse(d)
 
+@app.get("/api/refresh")
+def refresh(secret: str = ""):
+    import os
+    if secret != os.environ.get("REFRESH_SECRET", "letmein"):
+        return {"error": "wrong or missing secret"}
+    run_ingestion(mode=INGEST_MODE)
+    return {"status": "refreshed", "mode": INGEST_MODE,
+            "postings": _row_count(), "markets": queries.market_totals()}
 
 # ----------------------------- Dashboard ------------------------------------
 @app.get("/", response_class=HTMLResponse)
