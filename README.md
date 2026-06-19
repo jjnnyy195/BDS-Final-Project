@@ -55,7 +55,7 @@ digest.
    APScheduler re-runs ingestion daily.
 ```
 
-A more detailed diagram is in the PDF report (`architecture.png`).
+A more detailed diagram is in the report.
 
 ---
 
